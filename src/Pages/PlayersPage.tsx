@@ -15,21 +15,27 @@ const PlayersPage = () => {
   const handleClickCompteur = () =>{ navigate("player/compteur/");}
 
     return (
-        <>
-        <PlayerList maxAge={0}></PlayerList>
-       
-        <DetailsCase playerId={Number(playerId)}></DetailsCase>
-     
-        <Button
-            variant="outlined"
-            color="success"
-            onClick={() => handleClickCompteur()}
-            style={{ marginTop: '5px', width: '200px', fontSize:'20px'} }
-          >
-            Compteur
-         </Button>
-          
-        </>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', padding: '20px' }}>
+      <PlayerList maxAge={0} />
+    
+      <DetailsCase playerId={Number(playerId)} />
+    
+      <Button
+        variant="contained"
+        color="info"
+        onClick={handleClickCompteur}
+        style={{
+          width: '200px',
+          fontSize: '18px',
+          padding: '10px',
+          textTransform: 'none',
+          boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+        }}
+      >
+        Compteur
+      </Button>
+    </div>
+    
     )
 }
 

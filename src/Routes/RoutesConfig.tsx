@@ -16,7 +16,6 @@ export const RoutesConfig = () => {
                 <Route path="player/compteur/" element={<Compteur/>} />
                 <Route path="player/add" element={<AddPlayerPage/>} />
                 <Route path="player/edit/:playerId" element={<EditPlayerPage/>} />
-                
             </Routes>
         </BrowserRouter>
     )

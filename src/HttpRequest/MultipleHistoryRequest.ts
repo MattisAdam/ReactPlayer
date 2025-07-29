@@ -14,7 +14,7 @@ export const  PostMultiple = async(multiple : number, id? : number): Promise <Mu
         multiple : multiple
     }
     console.log("Données envoyées :", data);
-    const response = await axios.post<MultiPleHistory>('https://localhost:7118/api/MultipleHistory/Add-MultipleHistory', data);
+    const response = await axios.post<MultiPleHistory>('http://localhost:5094/api/MultipleHistory/Add-MultipleHistory', data);
     
     return response.data
 }

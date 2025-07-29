@@ -1,39 +1,48 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, IconButton, Menu, MenuItem } from "@mui/material";
-import { GetPlayerByCriteria, Player } from "../HttpRequest/PlayerRequest";
+import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,IconButton, Button, Menu, MenuItem, Tooltip, Box, Typography} from '@mui/material';
+import VisibilityIcon from '@mui/icons-material/Visibility'
+import EditIcon from '@mui/icons-material/Edit';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import AddIcon from '@mui/icons-material/Add';
+import { GetPlayerByCriteria, Player, Adresse, } from "../HttpRequest/PlayerRequest";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux'
 import { setPlayerId } from "./playerSlice";
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Delete from "./delete";
+
 
 
 export interface PlayerListProps {
   maxAge: number
 }
+
 const PlayerList = (props: PlayerListProps) => {
     let [players, setPlayers] = useState<Player[]>([])
     const navigate = useNavigate();
     useEffect(() => {
       const fetchData = async () => {
         const data = await GetPlayerByCriteria({ filterText: null, isActive: null, maxAge : props.maxAge });
+        // console.log("Data", data);
         setPlayers(data);
       };
       fetchData();
     }, [props.maxAge]);
-  
+    
     const sortByAgeDesc = () => {
-      const sortedPlayers = [...players].sort((a, b) => b.age - a.age);
+      const sortedPlayers = [...players].sort((a, b) => (b.age ?? 0) - (a.age ?? 0));
       setPlayers(sortedPlayers);
     }
+
     const sortByAgeAsc = () => {
-      const sortedPlayers = [...players].sort((a, b) => a.age - b.age);
+      const sortedPlayers = [...players].sort((a, b) => (a.age ?? 0) - (b.age ?? 0));
       setPlayers(sortedPlayers);
     }
+
     const sortByPseudoDesc= () => {
       const sortedPlayers = [...players].sort((a, b) => b.pseudo.localeCompare(a.pseudo));
       setPlayers(sortedPlayers)
     }
+
     const sortByPseudoAsc= () => {
       const sortedPlayers = [...players].sort((a, b) => a.pseudo.localeCompare(b.pseudo));
       setPlayers(sortedPlayers) 
@@ -48,148 +57,141 @@ const PlayerList = (props: PlayerListProps) => {
     const handleClickPseudo = (event: React.MouseEvent<HTMLButtonElement>) => {
       setAnchorElPseudo(event.currentTarget);
     };
+    
     const handleClosePseudo = () => {
       setAnchorElPseudo(null);
     };
+
     const handleClickAge = (event: React.MouseEvent<HTMLButtonElement>) => {
       setAnchorElAge(event.currentTarget);
     };
+
     const handleCloseAge = () => {
       setAnchorElAge(null);
     };
 
     const handleClickDispatch =(player: Player) =>{
-      dispatch(setPlayerId(player.id))
-    }
+      dispatch(setPlayerId(player.id))      
+    };
 
     const handleClickAdd = () => {
       navigate("player/add");
-    }
-
+    };
+    
     const handleClickEdit = (player: Player) => {
       navigate("player/edit/" + player.id);
-    }
+    };
 
-    
     const dispatch = useDispatch()
     return (
       <>
-          <TableContainer>
-            <Table
-              style={{ width: '80%', marginLeft: '100px', marginTop: '50px', fontSize: '20px' }}
+      
+        <h1 style={{textAlign:"center", fontSize:"80px"}}>
+          Player Scrabble
+        </h1>
+  <TableContainer component={Paper} sx={{ mt: 6, mx: 'auto', width: '95%', boxShadow: 4 }}>
+  <Table>
+    <TableHead>
+      <TableRow sx={{ backgroundColor: '#0e177f' }}>
+        <TableCell sx={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>
+          <Tooltip title="Add new player">
+            <Button
+              onClick={handleClickAdd}
+              variant="contained"
+              size="small"
+              startIcon={<AddIcon />}
+              sx={{ backgroundColor: '#fff', color: '#333', fontWeight: 'bold', mr: 2 }}
             >
-              <TableHead style={{ backgroundColor: '#B7A7A9', fontSize: '25px', color: '#FFFFFF' }}>
-                <TableRow>
-                  <TableCell style={{ paddingRight: '5px', marginLeft: '5px', color: 'white' }}>
-                    <Button
-                      onClick={() => handleClickAdd()}
-                      style={{ marginRight: '20px', fontSize: '15px', color:'#000000', backgroundColor: '#FFFFFF' }}
-                    >
-                      +
-                    </Button>
-                    Actions
-                  </TableCell>
-                  <TableCell
-                    style={{ color: 'white'}}
-                  >
-                    Pseudo
+              Add
+            </Button>
+          </Tooltip>
+          Actions
+        </TableCell>
 
-                    <IconButton
-                        onClick={handleClickPseudo}
-                        style={{ color: 'white', marginLeft: '10px' }}
-                      >
-                        <MoreVertIcon />
-                      </IconButton>
-                      <Menu anchorEl={anchorElPseudo} open={openPseudo} onClose={handleClosePseudo}>
-                        <MenuItem
-                          onClick={() => {
-                            sortByPseudoAsc();
-                            handleClosePseudo();
-                          }}
-                        >
-                          Sort by Asc ⬇
-                        </MenuItem>
-                        <MenuItem
-                          onClick={() => {
-                            sortByPseudoDesc();
-                            handleClosePseudo();
-                          }}
-                        >
-                          Sort by Desc ⬆
-                        </MenuItem>
-                      </Menu>
-                  </TableCell>
-                  <TableCell style={{ color: 'white', textAlign: 'center' }}>
-                      Age
-                      <IconButton
-                        onClick={handleClickAge}
-                        style={{ color: 'white', marginLeft: '10px' }}
-                      >
-                        <MoreVertIcon />
-                      </IconButton>
-                      <Menu anchorEl={anchorElAge} open={openAge} onClose={handleCloseAge}>
-                        <MenuItem
-                          onClick={() => {
-                            sortByAgeAsc();
-                            handleCloseAge();
-                          }}
-                        >
-                          Sort by Asc ⬇
-                        </MenuItem>
-                        <MenuItem
-                          onClick={() => {
-                            sortByAgeDesc();
-                            handleCloseAge();
-                          }}
-                        >
-                          Sort by Desc ⬆
-                        </MenuItem>
-                      </Menu>
-                    </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody style={{ fontSize: '20px' }}>
-                {players.map((player, index) => (
-                  <TableRow key={index}>
-                    <TableCell style={{ padding: '5px 10px', display: 'flex', justifyContent: 'flex-start' }}>
-                      <Button
-                        style={{ fontSize: '15px', marginLeft: '5px', textAlign: 'start' }}
-                        color="primary"
-                        variant="outlined"
-                        onClick={() => handleClickDispatch(player)}
-                      >
-                        👁
-                      </Button>
-                      <Button
-                        style={{ fontSize: '15px', marginLeft: '5px', textAlign: 'start' }}
-                        color="secondary"
-                        variant="outlined"
-                        onClick={() => handleClickEdit(player)}
-                      >
-                        ✎
-                      </Button>
-                      <Delete
-                        id={player.id}
-                        pseudo={player.pseudo}
-                        birthDate={player.birthDate}
-                      />
-                    </TableCell>
-                    <TableCell
-                      style={{ cursor: 'pointer', fontSize: '15px', marginLeft: '-15px', textAlign: 'start' }}
-                    >
-                      {player?.pseudo}
-                    </TableCell>
-                    <TableCell
-                      style={{ cursor: 'pointer', fontSize: '15px', marginRight: '20px', textAlign: 'center' }}
-                    >
-                      {player?.age}
-                    </TableCell>
-                  </TableRow>
+        <TableCell sx={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>
+          Username
+          <IconButton onClick={handleClickPseudo} sx={{ color: 'white', ml: 1 }}>
+            <MoreVertIcon />
+          </IconButton>
+          <Menu anchorEl={anchorElPseudo} open={openPseudo} onClose={handleClosePseudo}>
+            <MenuItem onClick={() => { sortByPseudoAsc(); handleClosePseudo(); }}>
+              Sort A → Z
+            </MenuItem>
+            <MenuItem onClick={() => { sortByPseudoDesc(); handleClosePseudo(); }}>
+              Sort Z → A
+            </MenuItem>
+          </Menu>
+        </TableCell>
+
+        <TableCell sx={{ color: 'white', fontWeight: 'bold', fontSize: 16, textAlign: 'center' }}>
+          Age
+          <IconButton onClick={handleClickAge} sx={{ color: 'white', ml: 1 }}>
+            <MoreVertIcon />
+          </IconButton>
+          <Menu anchorEl={anchorElAge} open={openAge} onClose={handleCloseAge}>
+            <MenuItem onClick={() => { sortByAgeAsc(); handleCloseAge(); }}>
+              Sort ↑
+            </MenuItem>
+            <MenuItem onClick={() => { sortByAgeDesc(); handleCloseAge(); }}>
+              Sort ↓
+            </MenuItem>
+          </Menu>
+        </TableCell>
+
+        <TableCell sx={{ color: 'white', fontWeight: 'bold', fontSize: 16, textAlign: 'center' }}>
+          Addresses
+        </TableCell>
+      </TableRow>
+    </TableHead>
+
+    <TableBody>
+      {players.map((player, index) => (
+        <TableRow key={index} hover sx={{ transition: '0.3s', '&:hover': { backgroundColor: '#f5f5f5' } }}>
+          <TableCell>
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              <Tooltip title="View details">
+                <IconButton color="primary" size="small" onClick={() => handleClickDispatch(player)}>
+                  <VisibilityIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Edit player">
+                <IconButton color="secondary" size="small" onClick={() => handleClickEdit(player)}>
+                  <EditIcon />
+                </IconButton>
+              </Tooltip>
+              <Delete
+                id={player.id}
+                pseudo={player.pseudo}
+                birthDate={player.birthDate}
+                adresses={player.addresses}
+              />
+            </Box>
+          </TableCell>
+
+          <TableCell sx={{ fontSize: 14 }}>{player.pseudo}</TableCell>
+
+          <TableCell sx={{ fontSize: 14, textAlign: 'center' }}>{player.age}</TableCell>
+
+          <TableCell>
+            {player.addresses && player.addresses.length > 0 ? (
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, textAlign: "center" }}>
+                {player.addresses.map((addr) => (
+                  <Typography key={addr.id} fontSize={14}>
+                    {addr.rue}
+                  </Typography>
                 ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-         </>
+              </Box>
+            ) : (
+              <Typography fontStyle="italic" color="text.secondary" textAlign={"center"}>
+                No address
+              </Typography>
+            )}
+          </TableCell>
+        </TableRow>
+      ))}
+    </TableBody>
+  </Table>
+</TableContainer></>
  )
 }
 
