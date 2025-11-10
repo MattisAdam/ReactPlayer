@@ -3,7 +3,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AddIcon from '@mui/icons-material/Add';
-import { GetPlayerByCriteria, Player, Adresse, } from "../HttpRequest/PlayerRequest";
+import { GetPlayerByCriteria, Player } from "../HttpRequest/PlayerRequest";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux'
